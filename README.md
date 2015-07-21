@@ -10,11 +10,11 @@ POPSTATS uses PLINK transposed files, and we provide the script vcf2tped.py for 
 The basic syntax, here used to compute a D-statistic (Green et al. 2010, Science; Patterson et al. 2012, Genetics) testing for evidence for Neandertal admixture in non-Africans:
 
 ```python
-# we have data in myfile.tped and myfile.tfam
+# we have data from the 1000 genomes project and the Altai Neandertal genome (Prufer et al. 2014, Nature) in myfile.tped and myfile.tfam
 python popstats.py --file myfile --pops chimpanzee,Neandertal,Yoruba,Japanese --informative
 
 #results:
-Chimp 	AltaiNeandertal 	YRI JPT 	0.0566273725392 	0.00376607791239 	15.036165968 	1002084 	530 	2 	2 	208 	214
+chimpanzee 	Neandertal 	Yoruba Japanese 	0.0566273725392 	0.00376607791239 	15.036165968 	1002084 	530 	2 	2 	208 	214
 ```
 
 The columns in the output represent the following
