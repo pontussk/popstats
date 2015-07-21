@@ -18,7 +18,7 @@ Chimp 	AltaiNeandertal 	YRI JPT 	0.0566273725392 	0.00376607791239 	15.036165968
 ```
 
 The columns in the output represent the following
-"""
+'''
 1. Population A
 2. Population B
 3. Population X
@@ -32,7 +32,7 @@ The columns in the output represent the following
 11. Number of chromosomes in Population B
 12. Number of chromosomes in Population X
 13. Number of chromosomes in Population Y
-"""
+'''
 
 ###Statistics
 
