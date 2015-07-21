@@ -7,7 +7,7 @@ POPSTATS is a python program for computing f-statistics, population symmetry tes
 
 POPSTATS uses PLINK transposed files, and we provide the script vcf2tped.py for conversion of VCF files to this format.
 
-The basic syntax, here used to compute a D-statistic testing for evidence for Neandertal admixture in non-Africans:
+The basic syntax, here used to compute a D-statistic (Green et al. 2010, Science; Patterson et al. 2012, Genetics) testing for evidence for Neandertal admixture in non-Africans:
 
 ```python
 # we have data in myfile.tped and myfile.tfam
