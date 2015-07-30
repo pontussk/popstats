@@ -57,9 +57,14 @@ Estimates the f4-statistic (p1-p2)*(p3-p4) (Reich et al. 2009).
 Estimates the D-statistic (Green et al. 2010, Science; Patterson et al. 2012, Genetics). This is the default statistic if no other options are given.
 
 **--symmetry**
-Estimates a symmetry statistic by sampling a random gene copy from each of POP1 and POP2
+Estimates a symmetry statistic by sampling a random gene copy from each of POP1 and POP2, conditioning on different alleles in POP1 and POP2, and computing a symmetry statistic averaged across the genome that POP1 carries the derived allele in an excess of loci (negative) or POP1 carries the derived allele in an excess of loci (positive statistic). The ancestral allele is determined by specifying an outgroup using the **--outgroup** option. This statistic is analogous to the one used in Do et al. 2014, Nature Genetics.
 
 **--LD** [distance] Estimates the h4-statistic (Skoglund et al. 2015, Nature) between pairwise loci at the specified distance. Must be accompanied by the option **--LDwindow** [distance] and **--withinfreq**.
+
+An **f4-ratio** can be computed by specifying **--testpop**, which will estimate allele frequencies pt for a fifth population POPT. The statistic computed will be the ratio of two f4 statistics  ((p1-p2)*(pt-p4))/((p1-p2)*(p3-p4)) which can be used as an unbiased estimator of ancestry in admixed populations under certain phylogenetic assumptions. See Patterson et al. 2012, Genetics, for details.
+
+**--FAB** Estimates the probability that POP2 carries the derived allele at loci where two randomly drawn copies from POP1 are different. The ancestral allele is specified by an outgroup using **--ancestor**. This statistic can be used to estimate divergence time between populations given assumptions on genetic drift in POP1. See the estimation of Neandertal divergence time in Green et al. 2010, Science, for details.
+
 ###Options
 
 **--informative** For the block jackknife weights, use only SNPs that polymorphic with POP1+POP2 and POP3+POP4. This can reduce standard errors slightly in some cases
@@ -69,6 +74,8 @@ Estimates a symmetry statistic by sampling a random gene copy from each of POP1 
 **--noweighting** Perform an unweighted block jackknife without taking the number of loci in each block into account.
 
 **--chromblocks** Perform a block jackknife using entire chromosomes as blocks.
+
+**--nojackknife** Do not estimate standard errors.
 
 **--not23** Use all chromosomes provided in the input file. The default behaviour is only to use chromosome 1-22. This option fully supports non-human organisms.
 
