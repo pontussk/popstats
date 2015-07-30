@@ -48,7 +48,7 @@ Estimates F_ST between POP1 and POP2 using the Hudson estimator (Bhatia et al.).
 Estimates the f2-statistic, the average squared allele frequency difference), between POP1 and POP2 (Reich et al. 2009, Nature)
 
 **--f3**
-Estimates the f3-statistic (Reich et al. 2009). The default is to use the heterozygosity correction described in Patterson et al. 2012, Genetics. For the simple f3 statistic f3=(p3-p1)*(p3-p2) use **--f3vanilla**.
+Estimates the f3-statistic (Reich et al. 2009). The default is to use the heterozygosity correction described in Patterson et al. 2012, Genetics. For the simple f3 statistic f3=(p3-p1)(p3-p2) use **--f3vanilla**.
 
 **--f4**
 Estimates the f4-statistic (p1-p2)*(p3-p4) (Reich et al. 2009).
