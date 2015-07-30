@@ -62,3 +62,14 @@ Estimates a symmetry statistic by sampling a random gene copy from each of POP1 
 **--LD** [distance] Estimates the h4-statistic (Skoglund et al. 2015, Nature) between pairwise loci at the specified distance. Must be accompanied by the option **--LDwindow** [distance] and **--withinfreq**.
 ###Options
 
+**--informative** For the block jackknife weights, use only SNPs that polymorphic with POP1+POP2 and POP3+POP4. This can reduce standard errors slightly in some cases
+
+**--morgan** Use genetic distance (default 5 cM) instead of physical distance to define block size for the jackknife.
+
+**--noweighting** Perform an unweighted block jackknife without taking the number of loci in each block into account.
+
+**--chromblocks** Perform a block jackknife using entire chromosomes as blocks.
+
+**--not23** Use all chromosomes provided in the input file. The default behaviour is only to use chromosome 1-22. This option fully supports non-human organisms.
+
+**--haploidize** Randomly sample a haploid genotype from each POP for use when computing statistics. This option together with the **--D** option computes a statistic commonly known as the classic ABBA-BABA statistic used in Green et al. 2010, Science.
