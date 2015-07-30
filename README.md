@@ -59,6 +59,6 @@ Estimates the D-statistic (Green et al. 2010, Science; Patterson et al. 2012, Ge
 **--symmetry**
 Estimates a symmetry statistic by sampling a random gene copy from each of POP1 and POP2
 
-
+**--LD** [distance] Estimates the h4-statistic (Skoglund et al. 2015, Nature) between pairwise loci at the specified distance. Must be accompanied by the option **--LDwindow** [distance] and **--withinfreq**.
 ###Options
 
