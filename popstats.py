@@ -1,7 +1,6 @@
 import sys
 import random
-import math
-from math import sqrt
+from math import sqrt, exp
 from optparse import OptionParser
 
 usage = "usage: %prog [options] arg1 arg2"
@@ -443,7 +442,7 @@ def pearson_def(x, y):
         xdiff2 += xdiff * xdiff
         ydiff2 += ydiff * ydiff
 
-    return diffprod / math.sqrt(xdiff2 * ydiff2)
+    return diffprod / sqrt(xdiff2 * ydiff2)
 	  
 def FST_H_pairwise (col):
 		NpopA = float(col[0])
@@ -1209,7 +1208,7 @@ for line in open(data):
 							
 					elif options.Dr:
 						#print Dstat,p,q
-						Dstat=Dstat/math.sqrt(p*(1.0-p)*q*(1.0-q))
+						Dstat=Dstat/sqrt(p*(1.0-p)*q*(1.0-q))
 					Ds.append(Dstat)
 					#print alleles[0]+lalleles[0],pq,p,q,Dstat
 				#print Ds
@@ -1251,7 +1250,7 @@ for line in open(data):
 				elif options.Dcorr:
 					D4=Ds[0]*Ds[1]
 					t=D4
-					n=math.sqrt((Ds[0]*Ds[0])*(Ds[1]*Ds[1]))
+					n=sqrt((Ds[0]*Ds[0])*(Ds[1]*Ds[1]))
 					
 					
 				elif options.hapD:
@@ -1540,7 +1539,7 @@ for line in open(data):
 
 	if options.pop2weight:
 		#t=t*((1.0-p2)*0.06-0.02)
-		t=(math.exp(p1-p2))*(p3-p4) 
+		t=(exp(p1-p2))*(p3-p4) 
 
 	if options.f4:
 		n=1.0
