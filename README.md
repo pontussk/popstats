@@ -1,7 +1,11 @@
 # popstats
 Population genetic summary statistics
 
-POPSTATS is a python program for computing f-statistics, population symmetry tests, and other population genetic quantities. It also allows estimation of the h4-statistic, first used in Skoglund et al. (2015, Nature). **This is a preliminary release, more documentation and a polished version to follow.**
+POPSTATS is a python program for computing f-statistics, population symmetry tests, and other population genetic quantities. It also allows estimation of the h4-statistic, first used in Skoglund et al. (2015, Nature). This is a preliminary release, more documentation and a polished version to follow.
+
+If you use POPSTATS, please cite 
+
+P Skoglund, S Mallick, MC Bortolini, N Chennagiri, T Hünemeier, ML Petzl-Erler, FM Salzano, N Patterson, D Reich (2015) Genetic evidence for two founding populations of the Americas, Nature, 525:104-108
 
 ###Basics
 
