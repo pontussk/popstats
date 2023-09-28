@@ -12,12 +12,18 @@ parser.add_option("-c", "--chromosome", action="store", type="string", dest="chr
 parser.add_option("--pops", action="store", dest="pops",help="populations in comma-delimited list")
 parser.add_option("--pops2", action="store", dest="pops2",help="populations in comma-delimited list")
 
+parser.add_option("--chromnumber", action="store",type="int", dest="chromnumber",help="chromnumber",default=22)
 
 parser.add_option("--informative", action="store_true", dest="informative",help="only use sites where pop1,pop2 are polymorphic and pop3,pop4 are also polymorphic",default=False)
 
 parser.add_option("--ancestor", action="store", dest="ancestor",help="ancestor",default=False)
 parser.add_option("--Dcorr", action="store_true", dest="Dcorr",help="Dcorr",default=False)
 parser.add_option("--scramble", action="store_true", dest="scramble",help="scramble",default=False)
+
+parser.add_option("--D", action="store_true", dest="D",help="Estimate the D-statistic (default behaviour of POPSTATS)",default=True)
+
+
+parser.add_option("--concordance", action="store_true", dest="concordance",help="Estimate the concordance statistic",default=True)
 
 
 parser.add_option("--jackest", action="store_true", dest="jackest",help="use jackknife estimate of the mean",default=False)
@@ -33,12 +39,9 @@ parser.add_option("--Bcorr", action="store_true", dest="Bcorr",help="Bcorr, requ
 
 parser.add_option("--Bstrat", action="store_true", dest="Bstrat",help="Bstrat, requires B-stat info in marker field separated by comma",default=False)
 
-
-parser.add_option("--nickverbose", action="store_true", dest="nickverbose",help="nickverbose",default=False)
-
+parser.add_option("--pi", action="store_true",dest="pi",help="estimates heterozygosity by sampling a random allele from each of two randomly chosen individuals in pop1",default=False)
 
 parser.add_option("--Bchoice", action="store",type="string", dest="Bchoice",help="Bchoice, requires B-stat info in marker field separated by comma",default=False)
-
 
 parser.add_option("--popscramble", action="store_true", dest="popscramble",help="popscramble",default=False)
 parser.add_option("--not23", action="store_true", dest="not23",help="not23",default=False)
@@ -50,6 +53,9 @@ parser.add_option("--maxn", action="store",type="int", dest="maxn",help="maxn",d
 parser.add_option("--vcf", action="store", dest="vcf",help="vcf from stdin",default=False)
 parser.add_option("--testpop", action="store", dest="testpop",help="testpop for f4 ratio",default=False)
 
+parser.add_option("--sitesconfig", action="store", dest="sitesconfig",help="test freq of configuration of sites",default=False)
+
+parser.add_option("--dfs", action="store", dest="dfs",help="count derived frequency of A,B in pop1,pop2",default=False)
 
 parser.add_option("--region", action="store", dest="region",help="region start-stop",default=False)
 
@@ -57,6 +63,7 @@ parser.add_option("--bootstrap", action="store",type="int", dest="bootstrap",hel
 
 parser.add_option("--ascertain", action="store", dest="ascertain",help="ascertain",default=False)
 parser.add_option("--ascertainfreq", action="store",type="int", dest="ascertainfreq",help="ascertainfreq",default=-1)
+parser.add_option("--minascertainfreq", action="store",type="int", dest="minascertainfreq",help="minascertainfreq",default=-1)
 parser.add_option("--downsampleasc", action="store",type="int", dest="downsampleasc",help="downsampleasc",default=False)
 
 parser.add_option("--ascertain2", action="store", dest="ascertain2",help="ascertain2",default=False)
@@ -73,6 +80,8 @@ parser.add_option("--fixed1", action="store_true", dest="fixed1",help="fixed1",d
 parser.add_option("--fixed3", action="store_true", dest="fixed3",help="fixed3",default=False)
 parser.add_option("--fixed4", action="store_true", dest="fixed4",help="fixed4",default=False)
 
+parser.add_option("--pop2hap", action="store_true", dest="pop2hap",help="pop2hap",default=False)
+
 parser.add_option("--outdiffexact", action="store",type="float", dest="outdiffexact",help="exact (0.1 etc) freqdiff between A and B in (A,B,X,Y)",default=False)
 
 parser.add_option("--simpleD", action="store_true", dest="simpleD",help="simpleD",default=False)
@@ -84,13 +93,12 @@ parser.add_option("--pop2weight", action="store_true", dest="pop2weight",help="p
 parser.add_option("--clock", action="store_true", dest="clock",help="clock",default=False)
 
 parser.add_option("--excludeoutliers", action="store_true", dest="excludeoutliers",help="excludeoutliers",default=False)
-parser.add_option("--Dutheilfilter", action="store_true", dest="Dutheilfilter",help="Dutheilfilter",default=False)
-parser.add_option("--Sriramfilter", action="store_true", dest="Sriramfilter",help="Sriramfilter",default=False)
-
 
 parser.add_option("--nohzcorrection", action="store_true", dest="nohzcorrection",help="Skip the Hz correction for f3, but keep sample size correction. To skip sample size correction, use --f3vanilla",default=False)
 
 parser.add_option("--haploidinclade", action="store_true", dest="haploidinclade",help="randomly sampled allele from each of X and Y in (A,B,X,Y)",default=False)
+parser.add_option("--haploidoutclade", action="store_true", dest="haploidoutclade",help="randomly sampled allele from each of A and B in (A,B,X,Y)",default=False)
+
 
 parser.add_option("--mutationclass", action="store", dest="mutationclass",help="alleles in comma-delimited list")
 
@@ -100,11 +108,14 @@ parser.add_option("--pop2freq", action="store",type="int", dest="pop2freq",help=
 parser.add_option("--notransitions", action="store_true", dest="notransitions",help="notransitions",default=False)
 parser.add_option("--nomissing", action="store_true", dest="nomissing",help="nomissing",default=False)
 parser.add_option("--f4", action="store_true", dest="f4",help="f4",default=False)
+parser.add_option("--f4hz", action="store_true", dest="f4hz",help="f4 / p1(1-p1)",default=False)
 parser.add_option("--f5", action="store_true", dest="f5",help="f5",default=False)
 parser.add_option("--ratio", action="store_true", dest="ratio",help="ratio [pop1,pop2,testpop,pop4] / [pop1,pop2,pop3,pop4]",default=False)
 parser.add_option("--f3", action="store_true", dest="f3",help="f3",default=False)
 parser.add_option("--f3vanilla", action="store_true", dest="f3vanilla",help="f3vanilla",default=False)
 parser.add_option("--f2", action="store_true", dest="f2",help="f2",default=False)
+
+parser.add_option("--fdiff", action="store_true", dest="fdiff",help="fdiff",default=False)
 parser.add_option("--verboseblocks", action="store_true", dest="verboseblocks",help="verboseblocks",default=False)
 parser.add_option("--verbose", action="store_true", dest="verbose",help="verbose",default=False)
 
@@ -115,16 +126,22 @@ parser.add_option("--mutatepop4", action="store",type="float", dest="mutatepop4"
 
 parser.add_option("--countDzero", action="store_true",dest="countDzero",help="countDzero",default=False)
 
-parser.add_option("--symmetry", action="store_true",dest="symmetry",help="symmetry",default=False)
+parser.add_option("--symmetry", action="store_true",dest="symmetry",help="symmetry test Do et al Nature Genetics, negative if POP1 has more derived alleles, positive if POP2, --ancestor must be defined",default=False)
+
+parser.add_option("--sharedpoly", action="store_true",dest="sharedpoly",help="sharedpoly",default=False)
+parser.add_option("--p1private", action="store_true",dest="p1private",help="p1private",default=False)
+parser.add_option("--shareddoubleton", action="store_true",dest="shareddoubleton",help="shareddoubleton",default=False)
+
+parser.add_option("--linearcomb", action="store",type="float",dest="linearcomb",help="linearcomb",default=False)
+parser.add_option("--linearcombsource", action="store",type="float",dest="linearcombsource",help="linearcombsource",default=False)
 
 
 parser.add_option("--LD", action="store",type="float", dest="LD",help="LD",default=False)
 parser.add_option("--SNPfreq", action="store",type="string", dest="SNPfreq",help="SNPfreq",default=False)
 parser.add_option("--FST", action="store_true", dest="FST",help="FST",default=False)
 parser.add_option("--FSTWC", action="store_true", dest="FSTWC",help="FSTWC",default=False)
+parser.add_option("--topSNP", action="store_true", dest="topSNP",help="most differentiated SNP between pop1 and pop2",default=False)
 parser.add_option("--Tdiv", action="store_true", dest="Tdiv",help="Tdiv",default=False)
-parser.add_option("--autocorr", action="store_true", dest="autocorr",help="autocorr",default=False)
-parser.add_option("--autocorr2", action="store_true", dest="autocorr2",help="autocorr2",default=False)
 parser.add_option("--positivestat", action="store_true", dest="positivestat",help="positivestat",default=False)
 parser.add_option("--polymorphic", action="store_true", dest="polymorphic",help="polymorphic",default=False)
 
@@ -135,10 +152,14 @@ parser.add_option("--hapD", action="store_true", dest="hapD",help="hapD",default
 parser.add_option("--twohaps", action="store_true", dest="twohaps",help="twohaps",default=False)
 
 parser.add_option("--mincount", action="store",type="float", dest="mincount",help="mincount",default=1)
+parser.add_option("--maxmissing", action="store",type="float", dest="maxmissing",help="maxmissingness",default=False)
 
 parser.add_option("--equaln", action="store_true", dest="equaln",help="equaln",default=False)
+parser.add_option("--wakeley", action="store_true", dest="wakeley",help="wakeley",default=False)
+parser.add_option("--wakeley3", action="store_true", dest="wakeley3",help="wakeley3",default=False)
 
 parser.add_option("--LiReich", action="store_true", dest="LiReich",help="Li and Reich statistic for probability that pop2 allele is derived given heterozygote in pop1",default=False)
+parser.add_option("--FAB", action="store_true", dest="FAB",help="Li and Reich statistic for probability that pop2 allele is derived given heterozygote in pop1",default=False)
 
 parser.add_option("--withinfreq", action="store_true", dest="withinfreq",help="compute allele frequences for the LD test (A,B),(X,Y) for each population separately",default=False)
 parser.add_option("--withinoutgroupsfreq", action="store_true", dest="withinoutgroupsfreq",help="compute allele frequences for the LD test (A,B),(X,Y) for population A and B separately but X and Y jointly",default=False)
@@ -150,12 +171,17 @@ parser.add_option("--outfile", action="store",type="string", dest="outfile",help
 parser.add_option("--inds", action="store_true", dest="inds",help="inds",default=False)
 parser.add_option("--multi", action="store_true", dest="multi",help="multi",default=False)
 parser.add_option("--nojackknife", action="store_true", dest="nojackknife",help="nojackknife",default=False)
+
+
+parser.add_option("--noestimate", action="store_true", dest="noestimate",help="noestimate",default=False)
 parser.add_option("--noweighting", action="store_true", dest="noweighting",help="noweighting",default=False)
-parser.add_option("--SFS", action="store_true", dest="SFS",help="SFS test, [ancestor,SFStarget,pop3,pop4]",default=False)
-parser.add_option("--mSFS", action="store_true", dest="mSFS",help="mSFS test, [SFStarget1,SFStarget2,pop3,pop4]",default=False)
-parser.add_option("--SFS2", action="store_true", dest="SFS2",help="SFS test, [ancestor,SFStarget,pop3,pop4]",default=False)
 parser.add_option("-b", "--block_size", action="store", type="float", dest="block_size",help="block_size",default=5000000.0)
 parser.add_option("--anc_test", action="store_true", dest="anc_test",help="anc test, [ancestor,SFStarget_fixed_ancestral,pop3,pop4]",default=False)
+
+parser.add_option("--popSFS", action="store_true", dest="popSFS",help="output pop1 SFS on one line (from 0 count to n)",default=False)
+
+parser.add_option("--mindist", action="store",type="int", dest="mindist",help="mindist",default=False)
+
 (options, args) = parser.parse_args()
 
 options.chromosome=options.chromosome.lstrip('chr')
@@ -167,12 +193,17 @@ else:
 if options.outfile != False:
 	sys.stdout = open(options.outfile, 'w')
 
+
+
 if options.file:
 	samples=options.file+'.tfam'
-	data=options.file+'.tped'
+	data=open(options.file+'.tped')
+elif options.tped == '-':
+	samples=options.tfam
+	data=sys.stdin
 else:
 	samples= options.tfam
-	data= options.tped
+	data= open(options.tped)
 poplist=options.pops.split(',')
 poplabel1=poplist[0].split('+')
 poplabel2=poplist[1].split('+')
@@ -187,7 +218,8 @@ if options.morgan:
 	options.block_size=0.05
 block_size=options.block_size
 
-
+if options.FAB:
+	options.LiReich=True
 
 if options.mutationclass:
 	mutationclass=options.mutationclass.split(',')
@@ -235,15 +267,16 @@ else:
 	pops=[]
 	for line in open(samples):
 		col=line.split()
-		sex=col[4]
-		if options.nomales and sex=='1':
-			pops.append('Ignore')
-			pops.append('Ignore')
-			continue
-		if options.onlymales and sex=='2':
-			pops.append('Ignore')
-			pops.append('Ignore')
-			continue
+		if options.nomales or options.onlymales:
+			sex=col[4]
+			if options.nomales and sex=='1':
+				pops.append('Ignore')
+				pops.append('Ignore')
+				continue
+			if options.onlymales and sex=='2':
+				pops.append('Ignore')
+				pops.append('Ignore')
+				continue
 		pops.append(col[0])
 		pops.append(col[0])
 
@@ -253,7 +286,8 @@ for line in open(samples):
 	popinds.append(col[0]+':'+col[1])
 	popinds.append(col[0]+':'+col[1])
 
-
+if options.linearcomb !=False or options.linearcombsource != False:
+	import scipy.stats
 
 
 targetpop1 = []
@@ -279,9 +313,6 @@ targetpop1 = []
 targetpop2 = []
 targetpop3 = []
 targetpop4 = []
-
-
-
 """	
 
 	
@@ -335,6 +366,8 @@ if options.ascertain != False:
 	asclabel=options.ascertain.split('+')
 	for i,p in enumerate(pops):
 		if p in asclabel: ascpop.append(i)
+	for i,p in enumerate(popinds):
+		if p in asclabel: ascpop.append(i)
 		
 	ascpopcount=len(ascpop)
 	if options.downsampleasc != False:
@@ -344,6 +377,8 @@ if options.ascertain2 != False:
 	ascpop2=[]
 	asclabel2=options.ascertain2.split('+')
 	for i,p in enumerate(pops):
+		if p in asclabel2: ascpop2.append(i)
+	for i,p in enumerate(popinds):
 		if p in asclabel2: ascpop2.append(i)
 		
 	ascpopcount2=len(ascpop2)
@@ -355,6 +390,8 @@ if options.ascertain3 != False:
 	ascpop3=[]
 	asclabel3=options.ascertain3.split('+')
 	for i,p in enumerate(pops):
+		if p in asclabel3: ascpop3.append(i)
+	for i,p in enumerate(popinds):
 		if p in asclabel3: ascpop3.append(i)
 		
 	ascpopcount3=len(ascpop3)
@@ -369,6 +406,9 @@ targetpop4count=len(targetpop4)
 #print targetpop1,targetpop2,targetpop3,targetpop4
 #print len(targetpop1),len(targetpop2),len(targetpop3),len(targetpop4)
 
+if options.popSFS:
+	from collections import defaultdict
+	SFSdict=defaultdict(int)
 
 counter = 0
 t_list=[]
@@ -391,8 +431,11 @@ triallelic=0
 choice_list=[]
 maf_list=[]
 result_list=[]
-
+previous_configstr='0000'
 f4_list=[]
+
+topSNP_list=[]
+topSNP_diff=0.0
 
 ####
 "Functions"
@@ -536,7 +579,7 @@ def haploidizefun(tohaploidize):
 			hg=random.sample(hg,2)
 			hreturngenos.append(hg[0])
 			#hreturngenos.append(hg[1])
-		return hreturngenos
+		return ''.join(hreturngenos)
 
 def Bcorrfun(inputlist):
 	import rpy
@@ -638,74 +681,61 @@ def mutate(mutateinp,mutationrate,mutalleles):
 		else:
 			mutateoutp += mbase
 	return mutateoutp
-
-ILSdevoid="""10241177 12619185
-16946047 18747389
-19303480 22198160
-38344992 41272675
-45930478 77954462
-99459295 111145964
-128232540 136796526
-151519514 155156362"""
-ILSdevoid=[i.split() for i in ILSdevoid.split('\n')]
-
+	
+def ancestralrecode(ancestralallele,recodeinp):
+	outgrecode=''
+	for ng in recodeinp:
+		if ng==ancestralallele:
+			outgrecode+='0'
+		else:
+			outgrecode+='1'
+	return outgrecode
 
 
-Neantroughs="""10000000 20000000
-40000000 50000000
-70000000 80000000
-100000000 110000000
-120000000 130000000
-130000000 140000000
-20000000 30000000"""
-Neantroughs=[i.split() for i in Neantroughs.split('\n')]
-
-
-		
+previousSNPpos=0
+previousSNPchrom=0
 ####
 "Main computations"
 ####
 line_counter=0
 previouschromosome='0'
 previouslines=[]
-for line in open(data):
+for line in data:
 	line_counter +=1
 	if options.clock:
 		if options.outfile ==False and line_counter > 999 and str(line_counter)[-3:] == '000':
 			progress(line_counter)
 	col= line.split()
-	chromosome = int(col[0])
+	chromosome = int(col[0].lstrip('chr'))
 	rsid = col[1]
 	position = int(col[3].split('-')[0])
+	
+	if options.mindist !=False:
+		if chromosome != previousSNPchrom:
+			previousSNPchrom = chromosome
+			previousSNPpos= 0
+		
+		elif position > (previousSNPpos+options.mindist):
+			previousSNPpos=position
+		else:
+			continue
+			
+
+		
 	if options.chromosome != False:
 		if chromosome != options.chromosome:
 			#print line,
 			continue
-		elif chromosome == 23 and (options.not23==False): 
+		elif chromosome == options.chromnumber+1 and (options.not23==False): 
 			if position < 2699520:continue #Filters out PAR1 in GRCh37 
 			elif (154931044 < position) and (position < 155260560):continue #Filters out PAR2 in GRCh37 
-			
-			if options.Dutheilfilter:
-				ILSdevoidstatus=False
-				for st,end in ILSdevoid:
-					if position > int(st) and position < int(end):
-						ILSdevoidstatus=True
-						break
-				if ILSdevoidstatus==True:continue
-				
-			if options.Sriramfilter:
-				Sriramstatus=False
-				for st,end in Neantroughs:
-					if position > int(st) and position < int(end):
-						Sriramstatus=True
-						break
-				if Sriramstatus==True:continue
+
 	else:
-		if (chromosome <1) or (chromosome>22) and (options.not23==False):continue
+		if (chromosome <1) or (chromosome > options.chromnumber) and (options.not23==False):continue
 
 	if options.region != False:
 		if position < regionchoice[0]:continue
-		if position > regionchoice[1]:continue
+		if position > regionchoice[1]:break
 		
 	
 	if options.Bcorr or options.Bstrat:
@@ -772,7 +802,7 @@ for line in open(data):
 			if options.fixed3:
 				if p3 not in [1.0,0.0]:continue
 				#if p4 <0.95 and p4>0.05:continue
-				if p4 in [1.0,0.0]:continue
+				#if p4 in [1.0,0.0]:continue
 				if options.verbose:
 					print p1,p2,p3,p4, ''.join(genotypes1),''.join(genotypes2),''.join(genotypes3),''.join(genotypes4),(p1-p2)*(p3-p4)
 					
@@ -804,6 +834,9 @@ for line in open(data):
 
 			elif options.f4:
 				n=1.0
+				
+			elif options.f4hz:
+				n=p1*(1.0-p1)
 
 			t_locus.append(t)
 			n_locus.append(n)
@@ -823,6 +856,7 @@ for line in open(data):
 		choice_list.append((chromosome,position,t,n))
 		if options.verbose and options.fixed1 ==False and options.fixed3 ==False and options.fixed4 ==False:
 			print ''.join(genotypes1),''.join(genotypes2),''.join(genotypes3),''.join(genotypes4),t,n,p1,p2,p3,p4
+
 		continue
 
 
@@ -878,7 +912,7 @@ for line in open(data):
 			genotypes3=haploidizefun(genotypes3)
 			genotypes4=haploidizefun(genotypes4)
 			
-		if options.autocorr or options.onlyBABA or options.onlyABBA or options.ABBAorBABA:
+		if options.onlyBABA or options.onlyABBA or options.ABBAorBABA:
 			if False:
 				tgenotypes1=random.choice(genotypes1)
 				tgenotypes2=random.choice(genotypes2)
@@ -1007,108 +1041,7 @@ for line in open(data):
 						print n,'\t\t\t\t',position,distance,lgenotypes1,lgenotypes2,lgenotypes3,lgenotypes4
 						print '---'
 					continue
-				if options.autocorr2:
-					for ai in range(0,len(genotypes1)):
-						for bi in range(0,len(genotypes2)):
-							for ci in range(0,len(genotypes3)):
-								for di in range(0,len(genotypes4)):
-									
-									tgenotypes1=genotypes1[ai]
-									tgenotypes2=genotypes2[bi]
-									tgenotypes3=genotypes3[ci]
-									tgenotypes4=genotypes4[di]
-									
-									tlgenotypes1=lgenotypes1[ai]
-									tlgenotypes2=lgenotypes2[bi]
-									tlgenotypes3=lgenotypes3[ci]
-									tlgenotypes4=lgenotypes4[di]
-									a,b,c,d=tgenotypes1[0],tgenotypes2[0],tgenotypes3[0],tgenotypes4[0]
-									if '0' in [a,b,c,d]:continue
-									#print a,b,c,d
-									siteABBA=False
-									siteBABA=False
-									if a==d and b==c and a !=b:
-										siteABBA=True
-									elif a==c and b==d and a !=b:
-										siteBABA=True
-									if '0' in lgenotypes1+lgenotypes2+lgenotypes3+lgenotypes4:continue
-									ref_allele=tlgenotypes1[0]
-									p1 = (1.0000 * tlgenotypes1.count(ref_allele) ) / float(len(tlgenotypes1))
-									p2 = (1.0000 * tlgenotypes2.count(ref_allele) ) / float(len(tlgenotypes2))
-									p3 = (1.0000 * tlgenotypes3.count(ref_allele) ) / float(len(tlgenotypes3))
-									p4 = (1.0000 * tlgenotypes4.count(ref_allele) ) / float(len(tlgenotypes4))
-									#D-test Patterson et al. 2012
-									t =  (p1-p2)*(p3-p4) 
-									n = (p1+p2-(2.0*p1*p2)) * (p3+p4-(2.0*p3*p4))
 
-						
-									if t ==0.0:
-										continue
-									#print t
-									if siteABBA==True:
-										t=t-1.0
-									elif siteBABA==True:
-										t=t+1.0
-									choice_list.append((chromosome,position,t,n))
-									t_list.append(t)
-									n_list.append(n)
-									if options.verbose:
-										print t,'\t\t\t\t',position,distance,tgenotypes1,tgenotypes2,tgenotypes3,tgenotypes4,t_list
-										print n,'\t\t\t\t',position,distance,lgenotypes1,lgenotypes2,lgenotypes3,lgenotypes4
-										print '---'
-									continue
-				elif options.autocorr:
-					"""
-					the autocorrelation statistic is
-					"""
-					lgenotypes1=random.choice(lgenotypes1)
-					lgenotypes2=random.choice(lgenotypes2)
-					lgenotypes3=random.choice(lgenotypes3)
-					lgenotypes4=random.choice(lgenotypes4)
-					a,b,c,d=genotypes1[0],genotypes2[0],genotypes3[0],genotypes4[0]
-					x,y,z,v=lgenotypes1[0],lgenotypes2[0],lgenotypes3[0],lgenotypes4[0]
-					if '0' in [a,b,c,d,x,y,z,v]:continue
-					state='0'
-					#abba
-					if a==d and b==c and a !=b:
-						if x==v and y==z and x !=y:
-							state='dABBA'
-							abbalist.append(state)
-							if options.verbose:
-								print position
-								print state
-								print a,b,c,d
-								print x,y,z,v
-						elif x==z and y==v and x !=y:
-							state='ndABBA'
-							abbalist.append(state)
-							if options.verbose:
-								print position
-								print state
-								print a,b,c,d
-								print x,y,z,v
-					elif a==c and b==d and a !=b:
-						if x==z and y==v and x !=y:
-							state='dBABA'
-							babalist.append(state)
-							if options.verbose:
-								print position
-								print state
-								print a,b,c,d
-								print x,y,z,v
-						elif x==v and y==z and x !=y:
-							state='ndBABA'
-							babalist.append(state)
-							if options.verbose:
-								print position
-								print genotypes1,genotypes2,genotypes3,genotypes4
-								print lgenotypes1,lgenotypes2,lgenotypes3,lgenotypes4
-								print state
-								print a,b,c,d
-								print x,y,z,v
-							
-
-					continue
 					
 				pfreqs=[]
 				qfreqs=[]
@@ -1316,6 +1249,17 @@ for line in open(data):
 	if len(genotypes3) < options.mincount: continue
 	if len(genotypes4) < options.mincount: continue
 	
+	if options.maxmissing !=False:
+		missingpop1 = (targetpop1count -len(genotypes1))/targetpop1count*1.0
+		missingpop2 = (targetpop2count -len(genotypes2))/targetpop2count*1.0
+		missingpop3 = (targetpop3count -len(genotypes3))/targetpop3count*1.0
+		missingpop4 = (targetpop4count -len(genotypes4))/targetpop4count*1.0
+
+		if missingpop1 > options.maxmissing:continue
+		elif missingpop2 > options.maxmissing:continue
+		elif missingpop3 > options.maxmissing:continue
+		elif missingpop4 > options.maxmissing:continue
+	
 	if options.pops2:
 		genotypes21=selectiongenotypes(genotypes,targetpop21)
 		genotypes22=selectiongenotypes(genotypes,targetpop22)
@@ -1357,6 +1301,12 @@ for line in open(data):
 		if genotypes3 ==genotypes4:
 			continue
 
+	if options.haploidoutclade != False:
+		genotypes1=random.choice(genotypes1)
+		genotypes2=random.choice(genotypes2)
+		if genotypes1 ==genotypes1:
+			continue
+
 
 	if options.nomissing != False:
 		if len(genotypes1) != targetpop1count:continue
@@ -1379,6 +1329,8 @@ for line in open(data):
 		derfreq=1.0*dercount/totn
 		print dercount,'\t',derfreq,'\t',totn
 		exit(0)
+
+	
 
 	
 	if options.ascertainfreq != -1:
@@ -1459,18 +1411,21 @@ for line in open(data):
 			badclass=False
 		if badclass ==True:
 			continue
-	if options.informative:
+	if options.informative and options.f3==False and options.f3vanilla==False and options.testpop==False:
 		alleles1=list(set(genotypes1+genotypes2))
 		alleles2=list(set(genotypes3+genotypes4))
 		if len(alleles1) != 2:continue
 		if len(alleles2) != 2:continue
 		
-		if options.testpop != False:
-			alleles1=list(set(genotypes1+genotypes2))
-			alleles2=list(set(testgenotypes+genotypes4))
+	if options.testpop != False and options.informative:
+			alleles1=list(set(genotypes1+genotypes2+genotypes3+genotypes4+testgenotypes))
 			if len(alleles1) != 2: continue
-			if len(alleles2) != 2: continue
 
+	if (options.informative and options.f3vanilla) or (options.informative and options.f3):
+		alleles1=list(set(genotypes1+genotypes2))
+		alleles2=list(set(genotypes3))
+		if len(alleles1) == 1 and len(alleles2) == 1:continue
+		
 	if options.ancestor:
 		ref_allele=random.choice(ancgenotypes)
 	else:
@@ -1485,8 +1440,6 @@ for line in open(data):
 
 
 	if maf:
-		#print genotypes1,genotypes2,genotypes3,genotypes4
-
 		af1=1.000 * genotypes1.count(genotypes1[0]) / len(genotypes1)
 		af2=1.000 * genotypes2.count(genotypes2[0]) / len(genotypes2)
 		af3=1.000 * genotypes3.count(genotypes3[0]) / len(genotypes3)
@@ -1524,6 +1477,9 @@ for line in open(data):
 
 
 	#D-test Patterson et al. 2012
+	if options.D: 
+		pass #default statistic
+	
 	t =  (p1-p2)*(p3-p4) 
 	n = (p1+p2-(2.0*p1*p2)) * (p3+p4-(2.0*p3*p4))
 
@@ -1541,6 +1497,23 @@ for line in open(data):
 		#t=t*((1.0-p2)*0.06-0.02)
 		t=(exp(p1-p2))*(p3-p4) 
 
+	if options.linearcomb !=False:
+		expectcomb= (  (p1*options.linearcomb) + (p2*(1.0-options.linearcomb)) ) #/2.0
+		combpval=scipy.stats.binom_test(  genotypes3.count(ref_allele), len(genotypes3), expectcomb)
+		combdiff=p3-expectcomb
+		print chromosome,position,genotypes1,genotypes2,genotypes3,p1,p2,p3,expectcomb,combdiff,combpval
+		continue
+		
+	if options.linearcombsource !=False:
+		alpha=options.linearcombsource
+		expectp1= ( (alpha-1.0)*p2 +p3  ) /alpha
+		if expectp1 > 1.0:expectp1=1.0
+		elif expectp1 < 0.0:expectp1=0.0	
+		combpval=scipy.stats.binom_test(  genotypes1.count(ref_allele)/2, len(genotypes1)/2, expectp1)
+		combdiff=p1-expectp1
+		print chromosome,position,genotypes1,genotypes2,genotypes3,p1,p2,p3,expectp1,combdiff,combpval
+		continue		
+		
 	if options.f4:
 		n=1.0
 	elif options.f5:
@@ -1577,6 +1550,15 @@ for line in open(data):
 		if branch1<0.0:continue
 		"""
 		n=1.0
+	elif options.pi:
+		if len(genotypes1) <4:continue
+		mychoices=random.sample(range(0,len(genotypes1),2),2)
+		genotypes1=genotypes1[mychoices[0]]+genotypes1[mychoices[1]]
+		if genotypes1[0] != genotypes1[1]:
+			t=1.0
+		elif genotypes1[0] == genotypes1[1]:
+			t=0.0
+		n=1.00
 		
 	elif options.simpleD:
 		if genotypes3[0]==ancgenotypes[0]:
@@ -1586,6 +1568,145 @@ for line in open(data):
 		n=1.0
 		#print t
 
+	elif options.popSFS:
+		ancestor=random.choice(ancgenotypes[0])
+		dfs1=len(genotypes1)-genotypes1.count(ancestor)
+		SFSdict[dfs1] += 1
+		continue
+
+	elif options.sitesconfig !=False:
+		genotypes1=random.choice(genotypes1)
+		genotypes2=random.choice(genotypes2)
+		genotypes3=random.choice(genotypes3)
+		genotypes4=random.choice(genotypes4)
+		ancestor=random.choice(ancgenotypes[0])
+		configstr=''
+		for g in [genotypes1,genotypes2,genotypes3,genotypes4]:
+			if g==ancestor:
+				configstr+='0'
+			else:
+				configstr+='1'
+
+		if configstr=='0000' or configstr=='1111':continue
+				
+		if options.sitesconfig =='pairs':
+			if previous_configstr=='0000':
+				previous_configstr=configstr
+				continue
+			print previous_configstr+':'+configstr
+			previous_configstr=configstr
+			continue
+		if ':' in options.sitesconfig:
+			if previous_configstr=='0000':
+				previous_configstr=configstr
+				continue
+			newconfigstr=previous_configstr+':'+configstr
+			previous_configstr=configstr
+			configstr=newconfigstr
+		
+		if options.verbose:
+			print configstr
+
+		if configstr in options.sitesconfig.split(','):
+			t=1.0
+		else:
+			t=0.0
+		n=1.0
+	
+	elif options.dfs !=False:
+		ancestor=random.choice(ancgenotypes[0])
+		dfs1=len(genotypes1)-genotypes1.count(ancestor)
+		dfs2=len(genotypes2)-genotypes2.count(ancestor)
+		configstr=str(dfs1)+':'+str(dfs2)
+		if options.verbose:
+			print configstr
+
+		if configstr in options.dfs.split(','):
+			t=1.0
+		else:
+			t=0.0
+		n=1.0
+
+	elif options.p1private:
+		ancestor=random.choice(ancgenotypes[0])
+		if len(list(set(genotypes1+genotypes2))) !=2:
+			continue
+		if p1 != 1.0 and p2 == 1.0:
+			t=1.0
+		else:
+			t=0.0
+		n=1.0
+
+	elif options.sharedpoly:
+		#print dfs1,dfs2,p1,p2
+		if len(list(set(genotypes1+genotypes2))) !=2:
+			continue
+		if p1 not in [1.0,0.0] and p2 not in [1.0,0.0]:
+			t=1.0
+		else:
+			t=0.0
+		n=1.0
+
+	elif options.shareddoubleton:
+		ancestor=random.choice(ancgenotypes[0])
+		if len(list(set(genotypes1+genotypes2))) !=2:
+			continue
+		
+		dfs1=len(genotypes1)-genotypes1.count(ancestor)
+		dfs2=len(genotypes2)-genotypes2.count(ancestor)
+		if dfs1 ==1 and dfs2==1:
+			t=1.0
+		else:
+			t=0.0
+		n=1.0
+
+	elif options.wakeley:
+		t=1.0
+		n=1.0
+		ancestor=random.choice(ancgenotypes[0])
+		dfs1=(1.0*len(genotypes1)-genotypes1.count(ancestor))/len(genotypes1)
+		dfs2=(1.0*len(genotypes2)-genotypes2.count(ancestor))/len(genotypes2)
+		#print dfs1,dfs2,p1,p2
+		if dfs1 not in [1.0,0.0] and dfs2 not in [1.0,0.0]:
+			print 'sharedpoly'
+		elif dfs1 > 0.0 and dfs2 == 0.0:
+			print 'p1private'
+		elif dfs1 == 0.0 and dfs2 > 0.0:
+			print 'p2private'
+		#elif p1 -p2 == 1.0:
+		#	print 'fixeddiff'
+		continue
+	elif options.wakeley3:
+		t=1.0
+		n=1.0
+		ancestor=random.choice(ancgenotypes[0])
+		dfs1=(1.0*len(genotypes1)-genotypes1.count(ancestor))/len(genotypes1)
+		dfs2=(1.0*len(genotypes2)-genotypes2.count(ancestor))/len(genotypes2)
+		dfs3=(1.0*len(genotypes3)-genotypes3.count(ancestor))/len(genotypes3)
+		fixedstate=[1.0,0.0]
+		ancestralstate=0.0
+		if options.verbose:
+			print ancestor,genotypes1,genotypes2,genotypes3,
+		if dfs1 not in fixedstate and dfs2 not in fixedstate and dfs3 == ancestralstate:
+			print 'sharedpoly12'
+		elif dfs1 not in fixedstate and dfs2 == ancestralstate and dfs3 not in fixedstate:
+			print 'sharedpoly13'
+		elif dfs1 == ancestralstate and dfs2 not in fixedstate and dfs3 not in fixedstate:
+			print 'sharedpoly23'
+		elif dfs1 not in fixedstate and dfs2 not in fixedstate and dfs3 not in fixedstate:
+			print 'sharedpoly123'
+		elif dfs1 > 0.0 and dfs2 == 0.0 and dfs3 == 0.0:
+			print 'p1private'
+		elif dfs1 == 0.0 and dfs2 > 0.0 and dfs3 == 0.0:
+			print 'p2private'
+		elif dfs1 == 0.0 and dfs2 == 0.0 and dfs3 > 0.0:
+			print 'p3private'
+		elif dfs1 == 0.0 and dfs2 == 0.0 and dfs3 == 0.0:
+			print 'ancestral'
+		else:
+			print 'other'
+		continue
+			
 	elif options.symmetry:
 		choicepop1=random.choice(genotypes1)
 		choicepop2=random.choice(genotypes2)
@@ -1650,6 +1771,9 @@ for line in open(data):
 		
 		
 	elif options.FST:
+		if len(genotypes1) < 2:continue
+		elif len(genotypes2) < 2:continue
+		elif len(list(set(genotypes1+genotypes2))) !=2:continue
 		FST_res=FST_H_pairwise([len(genotypes1),genotypes1.count(ref_allele),len(genotypes2),genotypes2.count(ref_allele)])
 		t=FST_res[0]
 		n=FST_res[1]
@@ -1688,51 +1812,24 @@ for line in open(data):
 	elif options.f2:
 		t =  (p1-p2)**2
 		n=1.0
+	elif options.fdiff:
+		t =  abs((p1-p2))
+		n=1.0	
 		
+	elif options.topSNP:
+		t =  abs(p1-p2)
+		n=1.0
+		if t > topSNP_diff:
+			topSNP_diff=t
+			topSNP_list=[]
+			topSNP_list.append(rsid)
+			if options.verbose: print genotypes1,genotypes2,topSNP_diff,t
+		elif t == topSNP_diff:
+			topSNP_list.append(rsid)
+			if options.verbose: print genotypes1,genotypes2,topSNP_diff,t
 
-	elif options.mSFS:
-		if len(genotypes1) != targetpop1count:continue
-		if len(genotypes2) != targetpop2count:continue
-		ancestor=list(set(ancgenotypes))[0]
-		targetcount1=len(genotypes1)-genotypes1.count(ancestor)
-		targetcount2=len(genotypes2)-genotypes2.count(ancestor)
-	
-		r1=random.choice(genotypes3)
-		r2=random.choice(genotypes4)
-		if r2==ancestor and r1 != ancestor:
-			t_list.append((targetcount1,targetcount2))
-		elif r2!=ancestor and r1 == ancestor:
-			n_list.append((targetcount1,targetcount2))
 		continue
 
-	elif options.SFS:
-		if len(genotypes2) != targetpop2count:continue
-		ancestor=list(set(genotypes1))[0]
-		targetcount=len(genotypes2)-genotypes2.count(ancestor)
-	
-		r1=random.choice(genotypes3)
-		r2=random.choice(genotypes4)
-		if r2==ancestor and r1 != ancestor:
-			t_list.append(targetcount)
-		elif r2!=ancestor and r1 == ancestor:
-			n_list.append(targetcount)
-		continue
-
-
-	elif options.SFS2:
-		if len(genotypes2) != targetpop2count:continue
-		ancestor=list(set(genotypes1))[0]
-		targetcount=len(genotypes2)-genotypes2.count(ancestor)
-		samplechoice=min(len(genotypes3),len(genotypes4))
-		r1=10-random.sample(genotypes3,samplechoice).count(ancestor)
-		r2=10-random.sample(genotypes4,samplechoice).count(ancestor)
-
-
-		if r1==1 and r2 == 0:
-			t_list.append(targetcount)
-		elif r1 ==0 and r2 == 1:
-			n_list.append(targetcount)
-		continue
 
 	elif options.anc_test:
 		if len(genotypes2) != targetpop2count:continue
@@ -1754,6 +1851,14 @@ for line in open(data):
 
 		t=(abba-baba)
 		n=1.0
+	elif options.pop2hap:
+		currentpop2hap=ancestralrecode(ancgenotypes[0],genotypes2)
+		if previous_configstr=='0000':
+			previous_configstr=currentpop2hap
+			continue
+		elif currentpop2hap != previous_configstr:
+			previous_configstr=currentpop2hap
+			continue
 	
 	#"""
 	hz1=p1*(1.0-p1)
@@ -1764,8 +1869,13 @@ for line in open(data):
 	#"""
 	t_list.append(t)
 	n_list.append(n)
-	if options.verbose:
-		print chromosome,position,genotypes1,genotypes2,genotypes3,genotypes4,p1,p2,p3,p4,t,hz1,hz2,hz3,hz4
+	if options.verbose and options.ancestor == False:
+		print chromosome,position,genotypes1,genotypes2,genotypes3,genotypes4,p1,p2,p3,p4,t#,n#,hz1,hz2,hz3,hz4
+	elif options.verbose and options.ancestor != False:
+		ancestralvariant=ancgenotypes[0]
+		print chromosome,position,ancestralrecode(ancestralvariant,genotypes1),ancestralrecode(ancestralvariant,genotypes2),ancestralrecode(ancestralvariant,genotypes3),ancestralrecode(ancestralvariant,genotypes4),alleles,ancestralvariant
+
+					
 		
 	if options.nojackknife:continue
 	if options.Bcorr  or options.Bstrat:
@@ -1775,74 +1885,30 @@ for line in open(data):
 	choice_list.append((chromosome,position,t,n)) #,avhz
 	
 choice_list.append((999,1,0,0,0))	
-	
-if options.autocorr:
-	print 'dABBA:',abbalist.count('dABBA')
-	print 'ndABBA:',abbalist.count('ndABBA')
-	print 'dBABA:',babalist.count('dBABA')
-	print 'ndBABA:',babalist.count('ndBABA')
-	abbacount=1.0*abbalist.count('dABBA')/(abbalist.count('ndABBA')+abbalist.count('dABBA'))
-	babacount=1.0*babalist.count('dBABA')/(babalist.count('ndBABA')+babalist.count('dBABA'))
-	D=(1.0*abbacount-babacount)/(babacount+abbacount)
-	print options.LD,'\t',abbacount,'\t',abbacount,D,abbalist.count('dABBA'),abbalist.count('ndABBA'),abbalist.count('ndBABA'),abbalist.count('dBABA')
-	#exit(0)
 
-if options.SFS or options.SFS2:
-	print '+'.join(poplabel2)+'_SFS','\t','+'.join(poplabel4)+'=0 '+'+'.join(poplabel3)+'=1','\t','+'.join(poplabel3)+'=0 '+'+'.join(poplabel4)+'=1'
-	for i in range(0,targetpop2count):
-		freq1=t_list.count(i)*1.0
-		freq2=n_list.count(i)*1.0
-		n=1.0*freq1+freq2
-		#print freq1,freq2
-		if freq1 == freq2: 
-			freq=0.0
-		else:
-			freq=(1.0*freq1-1.0*freq2)/n
-		#val=(abs(freq)*(1.0-abs(freq)))/n
-		#print val
-		#SE=sqrt(val)
-
-
-		print i,'\t',t_list.count(i),'\t',n_list.count(i),'\t',freq #,'\t',SE,'\t',freq/SE
+if options.noestimate:
 	exit(0)
-
-
-elif options.mSFS:
-	total=len(t_list)
-	for i in range(0,targetpop1count):
-			for x in range(0,targetpop2count):
-				freq1=t_list.count((i,x))*1.0/total
-				freq2=n_list.count((i,x))*1.0/total
-				n=1.0*freq1+freq2
-				if n==0:
-					print '0',
-					continue
-				#print freq1,freq2
-				freq=(1.0*freq1-1.0*freq2)/n
-				#val=(abs(freq)*(1.0-abs(freq)))/n
-				print freq,
-				#SE=sqrt(val)
-
-
-				#print i,x,'\t',t_list.count((i,x)),'\t',n_list.count((i,x)),'\t',freq,'\t',SE,'\t',freq/SE
-			print ''
-
-
 	
 
+elif options.popSFS:
+	maxallelecount=max(SFSdict.keys())
+	total=1.0*sum([float(SFSdict[pdic]) for pdic in range(0,targetpop1count+1)])
+	toprintdict=[str(SFSdict[pdic]/float(total)) for pdic in range(0,maxallelecount+1)]
+	print total,'\t','\t'.join(toprintdict)
+	exit(0)	
+
+		
+if options.topSNP:
+	print topSNP_diff,'\t',len(topSNP_list),'\t',' '.join(topSNP_list)
 	exit(0)
+	
 
 #print sum(f4_list)/len(f4_list)
 #print t_list,n_list
 Dp_main = sum(t_list) / sum(n_list)
 #print Dp_main
 num_SNPs=len(t_list)
-if options.positivestat and (Dp_main <0.0):
-	Dp_main=Dp_main*-1.0
-	poplabel3temp=poplabel4
-	poplabel4=poplabel3
-	poplabel3=poplabel3temp
-	
+
 
 if options.Bstrat:
 	Dp_main=Bstratfun(choice_list)
@@ -1868,14 +1934,14 @@ if options.Bcorr:
 			datstat=0.0
 		blist.append(datstat)
 	#print ''
-	if options.nickverbose:
-		
-		blist=[]
-		Dp_main2 = sum(t_list) / sum(n_list)
-		
-		
-		
+
 if options.nojackknife:
+	if options.positivestat and (Dp_main <0.0):
+		Dp_main=Dp_main*-1.0
+		poplabel3temp=poplabel4
+		poplabel4=poplabel3
+		poplabel3=poplabel3temp
+	
 	print '+'.join(poplabel1),'\t','+'.join(poplabel2),'\t','+'.join(poplabel3),'\t','+'.join(poplabel4),'\t', float(Dp_main),'\t','NA','\t','NA','\t','NA','\t',num_SNPs
 	exit(0)
 	
@@ -2096,18 +2162,6 @@ for line in choice_list:
 			jackknife_Dp.append(D_pop)
 			mjlist.append(mjcount)
 			
-			if options.nickverbose:
-				nickcounter +=1
-				tdat=[]
-				ndat=[]
-				for dat in choice_list_b:
-					tdat.append(dat[2])
-					ndat.append(dat[3])
-				tdat_b=sum(tdat)#/len(tdat)
-				ndat_b=sum(ndat)#/len(ndat)
-				print nickcounter,tdat_b/ndat_b,D_pop,mjcount#,
-
-	
 			blockstartindex=bcounter
 			current_chromosome = chromosome
 			prev_position=position
@@ -2126,23 +2180,10 @@ for line in choice_list:
 			mjcount=bcounter-blockstartindex
 			mjlist.append(mjcount)
 			
-			if options.nickverbose:
-				nickcounter +=1
-				tdat=[]
-				ndat=[]
-				for dat in choice_list_b:
-					tdat.append(dat[2])
-					ndat.append(dat[3])
-				tdat_b=sum(tdat)#/len(tdat)
-				ndat_b=sum(ndat)#/len(ndat)
-				print nickcounter,tdat_b/ndat_b,D_pop,mjcount#,
-
 			#print jackknife_Dp
 			blockstartindex=bcounter
 			prev_position=position
 			
-
-
 
 	else: #basepair blocks
 		if chromosome != current_chromosome:
@@ -2235,12 +2276,6 @@ Jackknife
 
 
 
-
-
-if options.nickverbose:
-	print 'Total:',Dp_main2,Dp_main,'0'
-	exit(0)       
-             
 if options.noweighting:    
 	n_groups=float(len(jackknife_Dp))      
 	pseudovalues=[]
@@ -2277,8 +2312,23 @@ else:
 if options.jackest:
 	Dp_main=jackknife_estimate
 
+if options.positivestat and (Dp_main <0.0):
+	Dp_main=Dp_main*-1.0
+	poplabel3temp=poplabel4
+	poplabel4=poplabel3
+	poplabel3=poplabel3temp
+	
+
+
 print '+'.join(poplabel1),'\t','+'.join(poplabel2),'\t','+'.join(poplabel3),'\t','+'.join(poplabel4),'\t', float(Dp_main),'\t',Dp_SE,'\t',float(Dp_main) / float(Dp_SE),'\t',num_SNPs,'\t', int(n_groups),'\t',targetpop1count,'\t',targetpop2count,'\t',targetpop3count,'\t',targetpop4count#,sum(t_list), sum(n_list)
 #exit(0)
+
+if options.verbose:
+	print t_list,n_list,sum(t_list),sum(n_list)
+
+if options.testpop != False:
+	print '+'.join(poplabel1),'\t','+'.join(poplabel2),'\t','+'.join(testlabel)+','+'+'.join(poplabel3),'\t','+'.join(poplabel4),'\t', float(Dp_main),'\t',Dp_SE,'\t',float(Dp_main) / float(Dp_SE),'\t',num_SNPs,'\t', int(n_groups),'\t',targetpop1count,'\t',targetpop2count,'\t',targetpop3count,'\t',targetpop4count#,sum(t_list), sum(n_list)
+
 if options.Bcorr or options.Bstrat:
 	#print '\t'.join([str(r) for r in range(0,9)])
 	print '\t'.join([str(r) for r in blist])
